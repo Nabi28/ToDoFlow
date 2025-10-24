@@ -1,17 +1,26 @@
-#include "Usuario.h"
-#include <iostream>
+#pragma once
+#ifndef USUARIO_H
+#define USUARIO_H
+// hola
+#include <string>
 
-Usuario::Usuario(int id, const std::string& nombre, const std::string& email)
-    : id(id), nombre(nombre), email(email) {
-}
+class Usuario {
+private:
+    int id;
+    std::string nombre;
+    std::string email;
 
-int Usuario::getId() const { return id; }
-const std::string& Usuario::getNombre() const { return nombre; }
-const std::string& Usuario::getEmail() const { return email; }
+public:
+    Usuario(int id, const std::string& nombre, const std::string& email);
 
-void Usuario::setNombre(const std::string& nuevoNombre) { nombre = nuevoNombre; }
-void Usuario::setEmail(const std::string& nuevoEmail) { email = nuevoEmail; }
+    int getId() const;
+    const std::string& getNombre() const;
+    const std::string& getEmail() const;
 
-void Usuario::imprimir() const {
-    std::cout << "[" << id << "] " << nombre << " <" << email << ">\n";
-}
+    void setNombre(const std::string& nuevoNombre);
+    void setEmail(const std::string& nuevoEmail);
+
+    void imprimir() const;
+};
+
+#endif
