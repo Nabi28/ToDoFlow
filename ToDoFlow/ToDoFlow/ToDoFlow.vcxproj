@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{1e955583-a9c4-4045-9222-99ed8cf4f05b}</ProjectGuid>
+    <ProjectGuid>{a56911b3-4150-4719-baf8-6b6326e9f8a8}</ProjectGuid>
     <RootNamespace>ToDoFlow</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -124,14 +124,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Tablero.cpp" />
-    <ClCompile Include="Tarea.cpp" />
-    <ClCompile Include="Usuario.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tablero.h" />
-    <ClInclude Include="Tarea.h" />
-    <ClInclude Include="Usuario.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
