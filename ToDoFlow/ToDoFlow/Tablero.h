@@ -1,10 +1,9 @@
-#pragma once
 // Guard para evitar inclusión múltiple
 #ifndef TABLERO_H
 #define TABLERO_H
 
-// #include "Librerias.h"
-// #include "Tarea.h"
+ #include "Librerias.h"
+ #include "Tarea.h"
 
 // Clase que representa un tablero de tareas
 class Tablero {
