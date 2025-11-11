@@ -32,8 +32,11 @@
     <ClInclude Include="Tarea.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Liberias.h">
+    <ClInclude Include="Librerias.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

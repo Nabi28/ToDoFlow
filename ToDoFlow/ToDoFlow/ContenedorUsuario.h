@@ -289,6 +289,9 @@ public:
             case 4:  // Mostrar usuarios
                 system("cls");
                 MostrarDatos();
+                cout << "\nPresione Enter para continuar...";
+                cin.ignore();
+                cin.get();
                 break;
             case 0:  // Volver
                 system("cls");

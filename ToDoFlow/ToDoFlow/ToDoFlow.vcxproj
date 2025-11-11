@@ -127,12 +127,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ContenedorUsuario.h" />
-    <ClInclude Include="Liberias.h" />
+    <ClInclude Include="Librerias.h" />
     <ClInclude Include="Tablero.h" />
     <ClInclude Include="Tarea.h" />
     <ClInclude Include="Usuario.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets" Condition="Exists('..\packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets')" />
+    <Import Project="..\packages\nlohmann.json.decomposed.3.12.0\build\native\nlohmann.json.decomposed.targets" Condition="Exists('..\packages\nlohmann.json.decomposed.3.12.0\build\native\nlohmann.json.decomposed.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets'))" />
+    <Error Condition="!Exists('..\packages\nlohmann.json.decomposed.3.12.0\build\native\nlohmann.json.decomposed.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.decomposed.3.12.0\build\native\nlohmann.json.decomposed.targets'))" />
+  </Target>
 </Project>
