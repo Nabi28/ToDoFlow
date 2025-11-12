@@ -2,8 +2,8 @@
 #ifndef TABLERO_H
 #define TABLERO_H
 
- #include "Librerias.h"
- #include "Tarea.h"
+#include "Librerias.h"
+#include "Tarea.h"
 
 // Clase que representa un tablero de tareas
 class Tablero {
@@ -125,30 +125,159 @@ public:
         cout << "Numero de Tareas: " << tareas.size() << endl;
     }
 
+    // Método auxiliar para validar formato y que la fecha no sea pasada
+    static bool validarFecha(const string& fecha) {
+        // Verifica formato básico YYYY-MM-DD (longitud 10)
+        if (fecha.length() != 10 || fecha[4] != '-' || fecha[7] != '-') {
+            return false;
+        }
+
+        // Extrae año, mes y día
+        int ano, mes, dia;
+        try {
+            ano = stoi(fecha.substr(0, 4));
+            mes = stoi(fecha.substr(5, 2));
+            dia = stoi(fecha.substr(8, 2));
+        }
+        catch (...) {
+            return false;
+        }
+
+        // Valida rangos básicos
+        if (ano < 1900 || ano > 9999 || mes < 1 || mes > 12 || dia < 1 || dia > 31) {
+            return false;
+        }
+
+        // Obtiene la fecha actual del sistema (versión segura)
+        time_t ahora = time(0);
+        tm fechaActual;
+        localtime_s(&fechaActual, &ahora);
+
+        int anoActual = fechaActual.tm_year + 1900;
+        int mesActual = fechaActual.tm_mon + 1;
+        int diaActual = fechaActual.tm_mday;
+
+        // Compara con la fecha actual
+        if (ano < anoActual) {
+            return false;  // Año pasado
+        }
+        else if (ano == anoActual) {
+            if (mes < mesActual) {
+                return false;  // Mes pasado
+            }
+            else if (mes == mesActual) {
+                if (dia < diaActual) {
+                    return false;  // Día pasado
+                }
+            }
+        }
+
+        return true;
+    }
+
     // Método estático para crear un tablero mediante menú interactivo
-    static Tablero* menuCrearTablero() {
+    template<typename GestorTableros>
+    static Tablero* menuCrearTablero(GestorTableros* gestor) {
         int id;
         string nombre, fecha;
+        bool idValido = false;
+        bool nombreValido = false;
+        bool fechaValida = false;
 
         cout << "\n--- CREAR NUEVO TABLERO ---" << endl;
-        cout << "ID del tablero: ";
-        cin >> id;
+
+        // Validación del ID del tablero
+        while (!idValido) {
+            cout << "ID del tablero: ";
+
+            // Verifica que la entrada sea un número entero
+            if (!(cin >> id)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nError: El ID debe ser un numero entero, no puede contener letras" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            // Verifica que sea un número positivo (mayor a 0)
+            if (id <= 0) {
+                cout << "\nError: El ID debe ser un numero positivo (mayor a 0)" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.ignore();
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            // Verifica que el ID no esté repetido
+            bool idRepetido = false;
+            for (auto tablero : gestor->getTableros()) {
+                if (tablero->getIdTablero() == id) {
+                    idRepetido = true;
+                    break;
+                }
+            }
+
+            if (idRepetido) {
+                cout << "\nError: El ID " << id << " ya esta en uso por otro tablero" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.ignore();
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            idValido = true;
+        }
+
         cin.ignore();
 
-        cout << "Nombre del tablero: ";
-        getline(cin, nombre);
+        // Validación del nombre del tablero
+        while (!nombreValido) {
+            cout << "Nombre del tablero: ";
+            getline(cin, nombre);
 
-        cout << "Fecha de creacion (YYYY-MM-DD): ";
-        getline(cin, fecha);
+            // Verifica que no esté vacío o solo contenga espacios
+            if (nombre.empty() || nombre.find_first_not_of(' ') == string::npos) {
+                cout << "\nError: El nombre del tablero no puede estar vacio" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            nombreValido = true;
+        }
+
+        // Validación de la fecha
+        while (!fechaValida) {
+            cout << "Fecha de creacion (YYYY-MM-DD): ";
+            getline(cin, fecha);
+
+            if (!validarFecha(fecha)) {
+                cout << "\nError: Formato de fecha invalido o la fecha es anterior a hoy" << endl;
+                cout << "Use el formato YYYY-MM-DD y asegurese de ingresar la fecha de hoy o una fecha futura" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            fechaValida = true;
+        }
 
         return new Tablero(id, nombre, fecha);
     }
 
     // Menú interactivo para gestionar las tareas del tablero
-    void menuTareas() {
+    template<typename ContenedorUsuario>
+    void menuTareas(ContenedorUsuario* contenedorUsuarios) {
         int opcion;
 
         do {
+            system("cls");
             cout << "\n--- MENU TAREAS DEL TABLERO: " << NombreTablero << " ---" << endl;
             cout << "1. Agregar Tarea" << endl;
             cout << "2. Eliminar Tarea" << endl;
@@ -171,9 +300,22 @@ public:
             switch (opcion) {
             case 1:  // Agregar tarea
                 system("cls"); {
-                    Tarea* nuevaTarea = Tarea::menuCrearTarea();
+                    // Verifica si hay usuarios registrados antes de crear una tarea
+                    if (contenedorUsuarios->getUsuarios().empty()) {
+                        cout << BRIGHT_RED << "Error: No hay usuarios registrados en el sistema" << RESET << endl;
+                        cout << BRIGHT_RED << "Debe crear al menos un usuario antes de agregar tareas" << RESET << endl;
+                        cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                        cin.ignore();
+                        cin.get();
+                        break;
+                    }
+
+                    Tarea* nuevaTarea = Tarea::menuCrearTarea(contenedorUsuarios);
                     agregarTarea(nuevaTarea);
                     nuevaTarea->CrearTarea();
+                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                    cin.ignore();
+                    cin.get();
                     break;
                 }
             case 2:  // Eliminar tarea
@@ -184,10 +326,18 @@ public:
                         cout << "\nNumero de tarea a eliminar: ";
                         cin >> indiceTarea;
                         eliminarTarea(indiceTarea - 1);  // -1 porque el índice empieza en 0
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                    }
+                    else {
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
                     }
                     break;
                 }
-            case 3:  // Actualizar tarea (en desarrollo)
+            case 3:  // Actualizar tarea
                 system("cls"); {
                     mostrarTareas();
                     if (!tareas.empty()) {
@@ -207,7 +357,13 @@ public:
                             getline(cin, fecha);
 
                             tareas[indiceTarea - 1]->ActualizarTarea(titulo, descripcion, fecha);
+                            cout << "\nPresione Enter para continuar...";
+                            cin.get();
                         }
+                    }
+                    else {
+                        cout << "\nPresione Enter para continuar...";
+                        cin.get();
                     }
                     break;
                 }
@@ -224,13 +380,24 @@ public:
                             cin >> estado;
                             tareas[indiceTarea - 1]->setEstado(estado == 's' || estado == 'S');
                             cout << "Estado actualizado" << endl;
+                            cout << "\nPresione Enter para continuar...";
+                            cin.ignore();
+                            cin.get();
                         }
+                    }
+                    else {
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
                     }
                     break;
                 }
             case 5:  // Mostrar tareas
                 system("cls");
                 mostrarTareas();
+                cout << "\nPresione Enter para continuar...";
+                cin.ignore();
+                cin.get();
                 break;
             case 0:  // Volver
                 system("cls");

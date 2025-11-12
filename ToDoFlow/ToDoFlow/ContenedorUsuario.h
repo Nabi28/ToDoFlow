@@ -307,6 +307,11 @@ public:
         return nullptr;  // Retorna puntero nulo si no lo encuentra
     }
 
+    // Getter: obtiene el vector de usuarios
+    vector<Usuario*>& getUsuarios() {
+        return usuarios;
+    }
+
     // Exporta datos a un archivo JSON específico
     void exportarJson(string nombreArchivo) {
         json datos;
