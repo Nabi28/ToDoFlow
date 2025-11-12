@@ -105,66 +105,6 @@ public:
         guardarEnJson();
     }
 
-    // Exporta tableros a archivo específico
-    void exportarJson(string nombreArchivo) {
-        json datos;
-        datos["sistema"] = "Gestion de Tareas";
-        datos["version"] = "1.0";
-
-        json tablerosJson = json::array();
-        for (auto tablero : tableros) {
-            tablerosJson.push_back(tablero->toJson());
-        }
-        datos["tableros"] = tablerosJson;
-
-        ofstream archivo(nombreArchivo);
-        if (archivo.is_open()) {
-            archivo << datos.dump(4);
-            archivo.close();
-            cout << "Tableros exportados a " << nombreArchivo << endl;
-        }
-    }
-
-    // Importa tableros desde archivo específico
-    void importarJson(string nombreArchivo) {
-        ifstream archivo(nombreArchivo);
-
-        if (!archivo.is_open()) {
-            cout << "No se pudo abrir " << nombreArchivo << endl;
-            return;
-        }
-
-        try {
-            json datos;
-            archivo >> datos;
-            archivo.close();
-
-            if (datos.contains("tableros")) {
-                char opcion;
-                cout << "Reemplazar tableros existentes? (s/n): ";
-                cin >> opcion;
-
-                if (opcion == 's' || opcion == 'S') {
-                    for (auto tablero : tableros) {
-                        delete tablero;
-                    }
-                    tableros.clear();
-                }
-
-                for (const auto& tableroJson : datos["tableros"]) {
-                    Tablero* tablero = Tablero::fromJson(tableroJson);
-                    tableros.push_back(tablero);
-                }
-
-                cout << "Tableros importados desde " << nombreArchivo << endl;
-                guardarEnJson();
-            }
-        }
-        catch (json::parse_error& e) {
-            cout << BRIGHT_RED << "Error al importar: " << e.what() << RESET << endl;
-        }
-    }
-
     // Elimina el archivo JSON
     void eliminarArchivoJson() {
         if (remove(archivoJson.c_str()) == 0) {
@@ -200,9 +140,7 @@ int main() {
         cout << "1. Gestionar Usuarios" << endl;
         cout << "2. Gestionar Tableros" << endl;
         cout << "3. Mostrar Todo" << endl;
-        cout << "4. Exportar Datos" << endl;
-        cout << "5. Importar Datos" << endl;
-        cout << "6. Eliminar Archivos " << endl;
+        cout << "4. Eliminar Archivos " << endl;
         cout << "0. Salir" << endl;
         cout << BRIGHT_BLUE << "========================================" << RESET << endl;
         cout << "Seleccione una opcion: ";
@@ -494,103 +432,37 @@ int main() {
             system("cls");
             break;
 
-        case 4:  // Exportar datos
-            system("cls"); {
-                int tipoExportar;
-                string nombreArchivo;
-
-                cout << "\n--- EXPORTAR DATOS ---" << endl;
-                cout << "1. Exportar Usuarios" << endl;
-                cout << "2. Exportar Tableros" << endl;
-                cout << "3. Exportar Todo" << endl;
-                cout << "0. Volver" << endl;
-                cout << "Opcion: ";
-                cin >> tipoExportar;
-                cin.ignore();
-
-                switch (tipoExportar) {
-                case 1:  // Exportar usuarios
-                    cout << "Nombre del archivo: ";
-                    getline(cin, nombreArchivo);
-                    contenedorUsuarios->exportarJson(nombreArchivo);
-                    cout << "\nPresione Enter para continuar...";
-                    cin.get();
-                    break;
-                case 2:  // Exportar tableros
-                    cout << "Nombre del archivo: ";
-                    getline(cin, nombreArchivo);
-                    gestorTableros->exportarJson(nombreArchivo);
-                    cout << "\nPresione Enter para continuar...";
-                    cin.get();
-                    break;
-                case 3:  // Exportar todo
-                    cout << "Nombre base para archivos: ";
-                    getline(cin, nombreArchivo);
-                    contenedorUsuarios->exportarJson(nombreArchivo + "_usuarios.json");
-                    gestorTableros->exportarJson(nombreArchivo + "_tableros.json");
-                    cout << "Datos exportados exitosamente" << endl;
-                    cout << "\nPresione Enter para continuar...";
-                    cin.get();
-                    break;
-                case 0:  // Volver
-                    break;
-                default:
-                    cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
-                }
-
-                system("cls");
-                break;
-            }
-
-        case 5:  // Importar datos
-            system("cls"); {
-                int tipoImportar;
-                string nombreArchivo;
-
-                cout << "\n--- IMPORTAR DATOS ---" << endl;
-                cout << "1. Importar Usuarios" << endl;
-                cout << "2. Importar Tableros" << endl;
-                cout << "0. Volver" << endl;
-                cout << "Opcion: ";
-                cin >> tipoImportar;
-                cin.ignore();
-
-                switch (tipoImportar) {
-                case 1:  // Importar usuarios
-                    cout << "Nombre del archivo: ";
-                    getline(cin, nombreArchivo);
-                    contenedorUsuarios->importarJson(nombreArchivo);
-                    cout << BRIGHT_CYAN "\nPresione Enter para continuar..." << RESET;
-                    cin.get();
-                    break;
-                case 2:  // Importar tableros
-                    cout << "Nombre del archivo: ";
-                    getline(cin, nombreArchivo);
-                    gestorTableros->importarJson(nombreArchivo);
-                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
-                    cin.get();
-                    break;
-                case 0:  // Volver
-                    break;
-                default:
-                    cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
-                }
-
-                system("cls");
-                break;
-            }
-
-        case 6:  // Eliminar archivos JSON
+        case 4:  // Eliminar archivos JSON
             system("cls"); {
                 char confirmacion;
-                cout << BRIGHT_RED << "ADVERTENCIA:" << RESET << " Se eliminaran TODOS los archivos JSON" << endl;
-                cout << "Esta seguro? (s/n): ";
-                cin >> confirmacion;
+                bool opcionValida = false;
 
-                if (confirmacion == 's' || confirmacion == 'S') {
-                    contenedorUsuarios->eliminarArchivoJson();
-                    gestorTableros->eliminarArchivoJson();
-                    cout << BRIGHT_RED << "Archivos eliminados" << RESET << endl;
+                cout << BRIGHT_RED << "ADVERTENCIA:" << RESET << " Se eliminaran TODOS los archivos JSON" << endl;
+
+                // Validación para solo aceptar 's' o 'n'
+                while (!opcionValida) {
+                    cout << "Esta seguro? (s/n): ";
+                    cin >> confirmacion;
+
+                    // Valida que solo sea 's', 'S', 'n' o 'N'
+                    if (confirmacion == 's' || confirmacion == 'S' ||
+                        confirmacion == 'n' || confirmacion == 'N') {
+                        opcionValida = true;
+
+                        if (confirmacion == 's' || confirmacion == 'S') {
+                            contenedorUsuarios->eliminarArchivoJson();
+                            gestorTableros->eliminarArchivoJson();
+                            cout << BRIGHT_RED << "Archivos eliminados" << RESET << endl;
+                        }
+                        else {
+                            cout << BRIGHT_GREEN << "Operacion cancelada" << RESET << endl;
+                        }
+                    }
+                    else {
+                        cout << BRIGHT_RED << "\nError: Debe ingresar 's' para Si o 'n' para No" << RESET << endl;
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    }
                 }
 
                 // Pausa para que el usuario pueda leer el resultado

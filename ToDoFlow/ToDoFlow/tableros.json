@@ -1,13 +1,5 @@
 {
     "sistema": "Gestion de Tareas",
-    "tableros": [
-        {
-            "fecha_creacion": "2025-12-31",
-            "id": 1,
-            "nombre": "ran",
-            "prioridad": false,
-            "tareas": []
-        }
-    ],
+    "tableros": [],
     "version": "1.0"
 }
