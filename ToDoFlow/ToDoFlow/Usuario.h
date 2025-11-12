@@ -4,6 +4,14 @@
 
 #include "Librerias.h"
 
+#define BRIGHT_RED     "\033[91m"
+#define BRIGHT_GREEN   "\033[92m"
+#define BRIGHT_BLUE    "\033[94m"
+#define BRIGHT_MAGENTA "\033[95m"
+#define BRIGHT_CYAN    "\033[96m"
+#define RESET "\033[0m"
+
+
 // Clase que representa un usuario del sistema
 class Usuario {
 private:
@@ -69,8 +77,8 @@ public:
             if (!(cin >> id)) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "\nError: Debe ingresar un numero entero" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_RED << "\nError: Debe ingresar un numero entero" << RESET << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET<< endl;
                 cin.get();
                 cout << endl;
                 continue;
@@ -78,8 +86,8 @@ public:
 
             // Verifica que no sea negativo
             if (id < 1) {
-                cout << "\nError: El ID debe ser mayor a 0" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_RED << "\nError: El ID debe ser mayor a 0" << RESET << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET << endl;
                 cin.ignore();
                 cin.get();
                 cout << endl;
@@ -98,7 +106,7 @@ public:
         int id;
         string nombre, correo;
 
-        cout << "\n--- CREAR NUEVO USUARIO ---" << endl;
+        cout << BRIGHT_MAGENTA << "\n--- CREAR NUEVO USUARIO ---" << RESET << endl;
 
         // Obtener ID con validación
         id = obtenerIdValidoParaCreacion();
