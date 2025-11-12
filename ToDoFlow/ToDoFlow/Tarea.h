@@ -203,6 +203,8 @@ public:
     static Tarea* menuCrearTarea(ContenedorUsuario* contenedor) {
         int idUsuario;
         string titulo, descripcion, fecha;
+        bool tituloValido = false;
+        bool descripcionValida = false;
         bool fechaValida = false;
 
         cout << BRIGHT_MAGENTA << "\n--- CREAR NUEVA TAREA ---" << RESET << endl;
@@ -211,13 +213,39 @@ public:
         idUsuario = obtenerIdUsuarioValido(contenedor);
         cin.ignore();  // Limpiar el buffer de entrada
 
-        // Solicitar título
-        cout << "Titulo de la tarea: ";
-        getline(cin, titulo);
+        // Validación del título
+        while (!tituloValido) {
+            cout << "Titulo de la tarea: ";
+            getline(cin, titulo);
 
-        // Solicitar descripción
-        cout << "Descripcion: ";
-        getline(cin, descripcion);
+            // Verificar que no esté vacío o solo contenga espacios
+            if (titulo.empty() || titulo.find_first_not_of(' ') == string::npos) {
+                cout << BRIGHT_RED << "\nError: El titulo no puede estar vacio" << RESET << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            tituloValido = true;
+        }
+
+        // Validación de la descripción
+        while (!descripcionValida) {
+            cout << "Descripcion: ";
+            getline(cin, descripcion);
+
+            // Verificar que no esté vacía o solo contenga espacios
+            if (descripcion.empty() || descripcion.find_first_not_of(' ') == string::npos) {
+                cout << BRIGHT_RED << "\nError: La descripcion no puede estar vacia" << RESET << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            descripcionValida = true;
+        }
 
         // Validación de la fecha de vencimiento
         while (!fechaValida) {

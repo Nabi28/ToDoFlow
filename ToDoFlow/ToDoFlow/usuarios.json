@@ -1,0 +1,11 @@
+{
+    "sistema": "Gestion de Tareas",
+    "usuarios": [
+        {
+            "correo": "ran@.com",
+            "id": 1,
+            "nombre": "Randy"
+        }
+    ],
+    "version": "1.0"
+}
