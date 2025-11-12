@@ -140,7 +140,7 @@ private:
             // Verifica que no sea negativo
             if (id < 0) {
                 cout << BRIGHT_RED << "\nError:El ID no puede ser negativo" << RESET << endl;
-                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..."<< RESET;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                 cin.ignore();
                 cin.get();
                 cout << endl;
@@ -186,7 +186,7 @@ private:
 
             if (!validarTexto(nombre)) {
                 cout << BRIGHT_RED << "\nError:El nombre no puede estar vacio ni contener simbolos especiales" << RESET << endl;
-                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..."<< RESET;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                 cin.get();
                 cout << endl;
                 continue;
@@ -209,7 +209,7 @@ private:
 
             if (correo.empty()) {
                 cout << BRIGHT_RED << "\nError: El correo no puede estar vacio" << RESET << endl;
-                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..."<< RESET;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                 cin.get();
                 cout << endl;
                 continue;
@@ -313,77 +313,10 @@ public:
         return usuarios;
     }
 
-    // Exporta datos a un archivo JSON específico
-    void exportarJson(string nombreArchivo) {
-        json datos;
-        datos["sistema"] = "Gestion de Tareas";
-        datos["version"] = "1.0";
-        datos["fecha_exportacion"] = __DATE__;  // Fecha de compilación
-
-        json usuariosJson = json::array();
-        for (auto usuario : usuarios) {
-            usuariosJson.push_back(usuario->toJson());
-        }
-        datos["usuarios"] = usuariosJson;
-
-        ofstream archivo(nombreArchivo);
-        if (archivo.is_open()) {
-            archivo << datos.dump(4);
-            archivo.close();
-            cout << "Datos exportados a " << nombreArchivo << endl;
-        }
-        else {
-            cout << "Error al exportar datos" << endl;
-        }
-    }
-
-    // Importa datos desde un archivo JSON específico
-    void importarJson(string nombreArchivo) {
-        ifstream archivo(nombreArchivo);
-
-        if (!archivo.is_open()) {
-            cout << BRIGHT_RED << "No se pudo abrir el archivo " << nombreArchivo << RESET << endl;
-            return;
-        }
-
-        try {
-            json datos;
-            archivo >> datos;
-            archivo.close();
-
-            if (datos.contains("usuarios")) {
-                // Pregunta si quiere reemplazar o agregar
-                char opcion;
-                cout << "Reemplazar usuarios existentes? (s/n): ";
-                cin >> opcion;
-
-                if (opcion == 's' || opcion == 'S') {
-                    // Limpia usuarios actuales
-                    for (auto usuario : usuarios) {
-                        delete usuario;
-                    }
-                    usuarios.clear();
-                }
-
-                // Carga usuarios del archivo
-                for (const auto& usuarioJson : datos["usuarios"]) {
-                    Usuario* usuario = Usuario::fromJson(usuarioJson);
-                    usuarios.push_back(usuario);
-                }
-
-                cout << "Datos importados desde " << nombreArchivo << endl;
-                guardarEnJson();  // Guarda en el archivo principal
-            }
-        }
-        catch (json::parse_error& e) {
-            cout << "Error al importar: " << e.what() << endl;
-        }
-    }
-
     // Elimina el archivo JSON (resetea datos)
     void eliminarArchivoJson() {
         if (remove(archivoJson.c_str()) == 0) {
-            cout << BRIGHT_RED <<  "Archivo " << archivoJson  <<" eliminado exitosamente" << endl;
+            cout << BRIGHT_RED << "Archivo " << archivoJson << " eliminado exitosamente" << endl;
 
             // Limpia usuarios en memoria
             for (auto usuario : usuarios) {
@@ -402,7 +335,7 @@ public:
 
         do {
             system("cls");
-            cout << BRIGHT_MAGENTA <<"\n--- MENU USUARIOS ---" << RESET << endl;
+            cout << BRIGHT_MAGENTA << "\n--- MENU USUARIOS ---" << RESET << endl;
             cout << "1. Agregar Usuario" << endl;
             cout << "2. Eliminar Usuario" << endl;
             cout << "3. Actualizar Usuario" << endl;
@@ -458,7 +391,7 @@ public:
                     cout << endl;
                     int id = obtenerIdValido("ID del usuario a eliminar: ", true);
                     EliminarUsuario(id);
-                    cout << BRIGHT_CYAN << "\nPresione Enter para volver al menu de usuarios..."<< RESET;
+                    cout << BRIGHT_CYAN << "\nPresione Enter para volver al menu de usuarios..." << RESET;
                     cin.ignore();
                     cin.get();
                     break;
@@ -467,7 +400,7 @@ public:
                 system("cls"); {
                     if (usuarios.empty()) {
                         cout << "No hay usuarios para actualizar" << endl;
-                        cout << BRIGHT_CYAN << "\nPresione Enter para continuar..."<< RESET;
+                        cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
                         cin.ignore();
                         cin.get();
                         break;
@@ -494,7 +427,7 @@ public:
             case 4:  // Mostrar usuarios
                 system("cls");
                 MostrarDatos();
-                cout << BRIGHT_CYAN <<"\nPresione Enter para continuar..." << RESET;
+                cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
                 cin.ignore();
                 cin.get();
                 break;
