@@ -4,13 +4,7 @@
 
 #include "Librerias.h"
 
-// colores para la consola
-#define BRIGHT_RED     "\033[91m"
-#define BRIGHT_GREEN   "\033[92m"
-#define BRIGHT_BLUE    "\033[94m"
-#define BRIGHT_MAGENTA "\033[95m"
-#define BRIGHT_CYAN    "\033[96m"
-#define RESET "\033[0m"
+
 
 // Clase que representa un usuario del sistema
 class Usuario {
@@ -86,7 +80,7 @@ public:
 
             // Verifica que no sea negativo
             if (id < 0) {
-                cout << BRIGHT_RED "\nError:" << RESET <<" El ID no puede ser negativo" << endl;
+                cout << BRIGHT_RED "\nError:El ID no puede ser negativo" << RESET << endl;
                 cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." RESET;
                 cin.ignore();
                 cin.get();

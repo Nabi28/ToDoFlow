@@ -3,13 +3,7 @@
 #define TAREA_H
 
 #include "Librerias.h"
-// colores para la consola
-#define BRIGHT_RED     "\033[91m"
-#define BRIGHT_GREEN   "\033[92m"
-#define BRIGHT_BLUE    "\033[94m"
-#define BRIGHT_MAGENTA "\033[95m"
-#define BRIGHT_CYAN    "\033[96m"
-#define RESET "\033[0m"
+
 
 // Clase que representa una tarea individual
 class Tarea {
@@ -91,7 +85,7 @@ public:
         cout << "Descripcion: " << Descripcion << endl;
         cout << "Fecha de Vencimiento: " << FechaVencimiento << endl;
         // Operador ternario: si Estado es true, muestra "Completada", sino "Pendiente"
-        cout << "Estado: " << (Estado ? "Completada" : "Pendiente") << endl;
+        cout << "Estado: " << (Estado ? "Completada" :  "Pendiente") << endl;
     }
 
     // Método auxiliar para validar formato y que la fecha no sea pasada
@@ -253,8 +247,8 @@ public:
             getline(cin, fecha);
 
             if (!validarFecha(fecha)) {
-                cout << BRIGHT_RED << "\nError: Formato de fecha invalido o la fecha es anterior a hoy" << RESET << endl;
-                cout << BRIGHT_CYAN << "Use el formato YYYY-MM-DD y asegurese de ingresar la fecha de hoy o una fecha futura" << RESET << endl;
+                cout << BRIGHT_RED << "\nError: " << RESET << "Formato de fecha invalido o la fecha es anterior a hoy" << RESET << endl;
+                cout << "Use el formato YYYY-MM-DD y asegurese de ingresar la fecha de hoy o una fecha futura" << RESET << endl;
                 cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                 cin.get();
                 cout << endl;

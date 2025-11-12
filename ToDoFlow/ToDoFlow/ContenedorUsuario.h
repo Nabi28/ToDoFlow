@@ -2,13 +2,6 @@
 #ifndef CONTENEDORUSUARIO_H
 #define CONTENEDORUSUARIO_H
 
-// Colores para la consola
-#define BRIGHT_RED     "\033[91m"
-#define BRIGHT_GREEN   "\033[92m"
-#define BRIGHT_BLUE    "\033[94m"
-#define BRIGHT_MAGENTA "\033[95m"
-#define BRIGHT_CYAN    "\033[96m"
-#define RESET "\033[0m"
 
 #include "Librerias.h"
 #include "Usuario.h"
@@ -137,7 +130,7 @@ private:
             if (!(cin >> id)) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << BRIGHT_RED << "\nError:" << RESET << " Debe ingresar un numero entero" << endl;
+                cout << BRIGHT_RED << "\nError:Debe ingresar un numero entero" << RESET << endl;
                 cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                 cin.get();
                 cout << endl;
@@ -146,7 +139,7 @@ private:
 
             // Verifica que no sea negativo
             if (id < 0) {
-                cout << BRIGHT_RED << "\nError:"<< RESET <<"El ID no puede ser negativo" << endl;
+                cout << BRIGHT_RED << "\nError:El ID no puede ser negativo" << RESET << endl;
                 cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..."<< RESET;
                 cin.ignore();
                 cin.get();
@@ -157,7 +150,7 @@ private:
             // Verifica si el ID debe existir o no existir
             if (validarExistencia) {
                 if (!idExiste(id)) {
-                    cout << BRIGHT_RED << "\nError:" << RESET <<" El ID " << id << " no existe" << endl;
+                    cout << BRIGHT_RED << "\nError: El ID " << id << " no existe" << RESET << endl;
                     cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo...";
                     cin.ignore();
                     cin.get();
@@ -167,7 +160,7 @@ private:
             }
             else {
                 if (idExiste(id)) {
-                    cout << BRIGHT_RED << "\nError:" << RESET <<" El ID " << id << " ya esta en uso" << endl;
+                    cout << BRIGHT_RED << "\nError:El ID " << id << " ya esta en uso" << RESET << endl;
                     cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                     cin.ignore();
                     cin.get();
@@ -192,8 +185,8 @@ private:
             getline(cin, nombre);
 
             if (!validarTexto(nombre)) {
-                cout << BRIGHT_RED << "\nError:" << RESET << "El nombre no puede estar vacio ni contener simbolos especiales" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_RED << "\nError:El nombre no puede estar vacio ni contener simbolos especiales" << RESET << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..."<< RESET;
                 cin.get();
                 cout << endl;
                 continue;
@@ -215,16 +208,16 @@ private:
             getline(cin, correo);
 
             if (correo.empty()) {
-                cout << "\nError: El correo no puede estar vacio" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_RED << "\nError: El correo no puede estar vacio" << RESET << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..."<< RESET;
                 cin.get();
                 cout << endl;
                 continue;
             }
 
             if (!validarCorreo(correo)) {
-                cout << "\nError: Formato de correo invalido (debe contener @ y un dominio)" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_RED << "\nError: Formato de correo invalido (debe contener @ y un dominio)" << RESET << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                 cin.get();
                 cout << endl;
                 continue;
@@ -239,7 +232,7 @@ private:
 public:
     // Constructor: inicializa el contenedor y carga datos si existen
     ContenedorUsuario(string archivo = "usuarios.json") : archivoJson(archivo) {
-        cout << "Contenedor de usuarios creado" << endl;
+        cout << BRIGHT_BLUE << "Contenedor de usuarios creado" << RESET << endl;
         cargarDesdeJson();  // Intenta cargar datos existentes
     }
 
@@ -257,7 +250,7 @@ public:
     // Agrega un usuario al contenedor
     void AnadirUsuario(Usuario* usuario) {
         usuarios.push_back(usuario);
-        cout << "Usuario anadido exitosamente" << endl;
+        cout << BRIGHT_GREEN << "Usuario anadido exitosamente" << RESET << endl;
         guardarEnJson();  // Guarda automáticamente
     }
 
@@ -268,12 +261,12 @@ public:
             if (usuarios[i]->getId() == id) {
                 delete usuarios[i];  // Libera memoria
                 usuarios.erase(usuarios.begin() + i);  // Elimina del vector
-                cout << "Usuario eliminado exitosamente" << endl;
+                cout << BRIGHT_GREEN << "Usuario eliminado exitosamente" << RESET << endl;
                 guardarEnJson();  // Guarda automáticamente
                 return;
             }
         }
-        cout << "Usuario no encontrado" << endl;
+        cout << BRIGHT_RED << "Usuario no encontrado" << RESET << endl;
     }
 
     // Actualiza los datos de un usuario existente
@@ -283,17 +276,17 @@ public:
             if (usuario->getId() == id) {
                 usuario->setNombre(nombre);
                 usuario->setCorreo(correo);
-                cout << "Usuario actualizado exitosamente" << endl;
+                cout << BRIGHT_GREEN << "Usuario actualizado exitosamente" << RESET << endl;
                 guardarEnJson();  // Guarda automáticamente
                 return;
             }
         }
-        cout << "Usuario no encontrado" << endl;
+        cout << BRIGHT_RED << "Usuario no encontrado" << RESET << endl;
     }
 
     // Muestra todos los usuarios registrados
     void MostrarDatos() {
-        cout << "\n=== Lista de Usuarios ===" << endl;
+        cout << BRIGHT_MAGENTA << "\n=== Lista de Usuarios ===" << RESET << endl;
         if (usuarios.empty()) {
             cout << "No hay usuarios registrados" << endl;
             return;
@@ -349,7 +342,7 @@ public:
         ifstream archivo(nombreArchivo);
 
         if (!archivo.is_open()) {
-            cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
+            cout << BRIGHT_RED << "No se pudo abrir el archivo " << nombreArchivo << RESET << endl;
             return;
         }
 
@@ -390,7 +383,7 @@ public:
     // Elimina el archivo JSON (resetea datos)
     void eliminarArchivoJson() {
         if (remove(archivoJson.c_str()) == 0) {
-            cout << "Archivo " << archivoJson << " eliminado exitosamente" << endl;
+            cout << BRIGHT_RED <<  "Archivo " << archivoJson  <<" eliminado exitosamente" << endl;
 
             // Limpia usuarios en memoria
             for (auto usuario : usuarios) {
@@ -399,7 +392,7 @@ public:
             usuarios.clear();
         }
         else {
-            cout << "No se pudo eliminar el archivo" << endl;
+            cout << BRIGHT_RED << "No se pudo eliminar el archivo" << RESET << endl;
         }
     }
 
@@ -409,7 +402,7 @@ public:
 
         do {
             system("cls");
-            cout << "\n--- MENU USUARIOS ---" << endl;
+            cout << BRIGHT_MAGENTA <<"\n--- MENU USUARIOS ---" << RESET << endl;
             cout << "1. Agregar Usuario" << endl;
             cout << "2. Eliminar Usuario" << endl;
             cout << "3. Actualizar Usuario" << endl;
@@ -423,7 +416,7 @@ public:
             if (cin.fail()) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Opcion invalida" << endl;
+                cout << BRIGHT_RED << "Opcion invalida" << endl;
                 continue;
             }
 
@@ -433,7 +426,7 @@ public:
                     int id;
                     string nombre, correo;
 
-                    cout << "\n--- CREAR NUEVO USUARIO ---" << endl;
+                    cout << BRIGHT_MAGENTA << "\n--- CREAR NUEVO USUARIO ---" << RESET << endl;
 
                     // Obtener ID válido (no existente)
                     id = obtenerIdValido("ID del usuario: ", false);
@@ -448,15 +441,15 @@ public:
                     // Crear usuario con datos validados
                     Usuario* nuevoUsuario = new Usuario(id, nombre, correo);
                     AnadirUsuario(nuevoUsuario);
-                    cout << "\nPresione Enter para continuar...";
+                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
                     cin.get();
                     break;
                 }
             case 2:  // Eliminar usuario
                 system("cls"); {
                     if (usuarios.empty()) {
-                        cout << "No hay usuarios para eliminar" << endl;
-                        cout << "\nPresione Enter para continuar...";
+                        cout << BRIGHT_RED << "No hay usuarios para eliminar" << endl;
+                        cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
                         cin.ignore();
                         cin.get();
                         break;
@@ -465,7 +458,7 @@ public:
                     cout << endl;
                     int id = obtenerIdValido("ID del usuario a eliminar: ", true);
                     EliminarUsuario(id);
-                    cout << "\nPresione Enter para volver al menu de usuarios...";
+                    cout << BRIGHT_CYAN << "\nPresione Enter para volver al menu de usuarios..."<< RESET;
                     cin.ignore();
                     cin.get();
                     break;
@@ -474,7 +467,7 @@ public:
                 system("cls"); {
                     if (usuarios.empty()) {
                         cout << "No hay usuarios para actualizar" << endl;
-                        cout << "\nPresione Enter para continuar...";
+                        cout << BRIGHT_CYAN << "\nPresione Enter para continuar..."<< RESET;
                         cin.ignore();
                         cin.get();
                         break;
@@ -494,14 +487,14 @@ public:
                     correo = obtenerCorreoValido();
 
                     ActualizarUsuario(id, nombre, correo);
-                    cout << "\nPresione Enter para continuar...";
+                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
                     cin.get();
                     break;
                 }
             case 4:  // Mostrar usuarios
                 system("cls");
                 MostrarDatos();
-                cout << "\nPresione Enter para continuar...";
+                cout << BRIGHT_CYAN <<"\nPresione Enter para continuar..." << RESET;
                 cin.ignore();
                 cin.get();
                 break;
@@ -509,7 +502,7 @@ public:
                 system("cls");
                 break;
             default:
-                cout << "Opcion invalida" << endl;
+                cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
             }
         } while (opcion != 0);
     }

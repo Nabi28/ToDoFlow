@@ -11,6 +11,14 @@
 #include <fstream>      // Para manejo de archivos
 #include <iomanip>      // Para formato de salida
 
+// Colores para la consola
+#define BRIGHT_RED     "\033[91m"
+#define BRIGHT_GREEN   "\033[92m"
+#define BRIGHT_BLUE    "\033[94m"
+#define BRIGHT_MAGENTA "\033[95m"
+#define BRIGHT_CYAN    "\033[96m"
+#define RESET "\033[0m"
+
 // Biblioteca para manejo de JSON
 #include <nlohmann/json.hpp>
 
