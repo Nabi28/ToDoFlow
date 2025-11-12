@@ -69,6 +69,44 @@ private:
 
     // ===== MÉTODOS DE VALIDACIÓN =====
 
+    // Valida que una cadena no esté vacía y no contenga símbolos
+    bool validarTexto(const string& texto) {
+        // Verifica que no esté vacío
+        if (texto.empty() || texto.find_first_not_of(' ') == string::npos) {
+            return false;
+        }
+
+        // Verifica que solo contenga letras, números y espacios
+        for (char c : texto) {
+            if (!isalnum(c) && c != ' ') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Valida formato de correo
+    bool validarCorreo(const string& correo) {
+        // Verifica que no esté vacío
+        if (correo.empty()) {
+            return false;
+        }
+
+        // Verifica que contenga @ y tenga contenido antes y después
+        size_t posArroba = correo.find('@');
+        if (posArroba == string::npos || posArroba == 0 || posArroba == correo.length() - 1) {
+            return false;
+        }
+
+        // Verifica que tenga un punto después del @
+        size_t posPunto = correo.find('.', posArroba);
+        if (posPunto == string::npos || posPunto == correo.length() - 1) {
+            return false;
+        }
+
+        return true;
+    }
+
     // Verifica si un ID ya existe en el sistema
     bool idExiste(int id) {
         for (auto usuario : usuarios) {
@@ -91,27 +129,41 @@ private:
             if (!(cin >> id)) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Error: Debe ingresar un numero entero" << endl;
+                cout << "\nError: Debe ingresar un numero entero" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.get();
+                cout << endl;
                 continue;
-
             }
 
             // Verifica que no sea negativo
             if (id < 0) {
-                cout << "Error: El ID no puede ser negativo" << endl;
+                cout << "\nError: El ID no puede ser negativo" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.ignore();
+                cin.get();
+                cout << endl;
                 continue;
             }
 
             // Verifica si el ID debe existir o no existir
             if (validarExistencia) {
                 if (!idExiste(id)) {
-                    cout << "Error: El ID " << id << " no existe" << endl;
+                    cout << "\nError: El ID " << id << " no existe" << endl;
+                    cout << "Presione Enter para intentar de nuevo...";
+                    cin.ignore();
+                    cin.get();
+                    cout << endl;
                     continue;
                 }
             }
             else {
                 if (idExiste(id)) {
-                    cout << "Error: El ID " << id << " ya esta en uso" << endl;
+                    cout << "\nError: El ID " << id << " ya esta en uso" << endl;
+                    cout << "Presione Enter para intentar de nuevo...";
+                    cin.ignore();
+                    cin.get();
+                    cout << endl;
                     continue;
                 }
             }
@@ -120,7 +172,60 @@ private:
         }
 
         return id;
+    }
 
+    // Obtiene un nombre válido
+    string obtenerNombreValido() {
+        string nombre;
+        bool nombreValido = false;
+
+        while (!nombreValido) {
+            cout << "Nombre: ";
+            getline(cin, nombre);
+
+            if (!validarTexto(nombre)) {
+                cout << "\nError: El nombre no puede estar vacio ni contener simbolos especiales" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            nombreValido = true;
+        }
+
+        return nombre;
+    }
+
+    // Obtiene un correo válido
+    string obtenerCorreoValido() {
+        string correo;
+        bool correoValido = false;
+
+        while (!correoValido) {
+            cout << "Correo: ";
+            getline(cin, correo);
+
+            if (correo.empty()) {
+                cout << "\nError: El correo no puede estar vacio" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            if (!validarCorreo(correo)) {
+                cout << "\nError: Formato de correo invalido (debe contener @ y un dominio)" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            correoValido = true;
+        }
+
+        return correo;
     }
 
 public:
@@ -312,21 +417,26 @@ public:
             switch (opcion) {
             case 1:  // Agregar usuario
                 system("cls"); {
-                    Usuario* nuevoUsuario = Usuario::menuCrearUsuario();
-                    // Verificar que el ID no esté repetido
-                    if (idExiste(nuevoUsuario->getId())) {
-                        cout << "Error: El ID " << nuevoUsuario->getId() << " ya esta en uso" << endl;
-                        delete nuevoUsuario;
-                        cout << "\nPresione Enter para continuar...";
-                        cin.ignore();
-                        cin.get();
-                    }
-                    else {
-                        AnadirUsuario(nuevoUsuario);
-                        cout << "\nPresione Enter para continuar...";
-                        cin.ignore();
-                        cin.get();
-                    }
+                    int id;
+                    string nombre, correo;
+
+                    cout << "\n--- CREAR NUEVO USUARIO ---" << endl;
+
+                    // Obtener ID válido (no existente)
+                    id = obtenerIdValido("ID del usuario: ", false);
+                    cin.ignore();
+
+                    // Obtener nombre válido
+                    nombre = obtenerNombreValido();
+
+                    // Obtener correo válido
+                    correo = obtenerCorreoValido();
+
+                    // Crear usuario con datos validados
+                    Usuario* nuevoUsuario = new Usuario(id, nombre, correo);
+                    AnadirUsuario(nuevoUsuario);
+                    cout << "\nPresione Enter para continuar...";
+                    cin.get();
                     break;
                 }
             case 2:  // Eliminar usuario
@@ -363,11 +473,12 @@ public:
                     cin.ignore();
 
                     string nombre, correo;
-                    cout << "Nuevo nombre: ";
-                    getline(cin, nombre);
 
-                    cout << "Nuevo correo: ";
-                    getline(cin, correo);
+                    // Obtener nombre válido
+                    nombre = obtenerNombreValido();
+
+                    // Obtener correo válido
+                    correo = obtenerCorreoValido();
 
                     ActualizarUsuario(id, nombre, correo);
                     cout << "\nPresione Enter para continuar...";
