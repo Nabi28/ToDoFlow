@@ -320,64 +320,87 @@ public:
                 }
             case 2:  // Eliminar tarea
                 system("cls"); {
-                    mostrarTareas();
-                    if (!tareas.empty()) {
-                        int indiceTarea;
-                        cout << "\nNumero de tarea a eliminar: ";
-                        cin >> indiceTarea;
-
-                        // Validar que el índice esté en rango
-                        if (indiceTarea < 1 || indiceTarea > tareas.size()) {
-                            cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
-                            cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
-                        }
-                        else {
-                            eliminarTarea(indiceTarea - 1);  // -1 porque el índice empieza en 0
-                        }
-
+                    if (tareas.empty()) {
+                        cout << BRIGHT_RED << "No hay tareas para eliminar" << RESET << endl;
                         cout << "\nPresione Enter para continuar...";
                         cin.ignore();
                         cin.get();
+                        break;
+                    }
+
+                    mostrarTareas();
+                    int indiceTarea;
+                    cout << "\nNumero de tarea a eliminar: ";
+
+                    // Validar que la entrada sea un número
+                    if (!(cin >> indiceTarea)) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << BRIGHT_RED << "\nError: Debe ingresar un numero valido" << RESET << endl;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.get();
+                        break;
+                    }
+
+                    // Validar que el índice esté en rango
+                    if (indiceTarea < 1 || indiceTarea > tareas.size()) {
+                        cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
+                        cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
                     }
                     else {
-                        cout << "\nPresione Enter para continuar...";
-                        cin.ignore();
-                        cin.get();
+                        eliminarTarea(indiceTarea - 1);  // -1 porque el índice empieza en 0
+                        cout << BRIGHT_GREEN << "Tarea eliminada exitosamente" << RESET << endl;
                     }
+
+                    cout << "\nPresione Enter para continuar...";
+                    cin.ignore();
+                    cin.get();
                     break;
                 }
             case 3:  // Actualizar tarea
                 system("cls"); {
-                    mostrarTareas();
-                    if (!tareas.empty()) {
-                        int indiceTarea;
-                        string titulo, descripcion, fecha;
-
-                        cout << "\nNumero de tarea a actualizar: ";
-                        cin >> indiceTarea;
+                    if (tareas.empty()) {
+                        cout << BRIGHT_RED << "No hay tareas para actualizar" << RESET << endl;
+                        cout << "\nPresione Enter para continuar...";
                         cin.ignore();
+                        cin.get();
+                        break;
+                    }
 
-                        // Validar que el índice esté en rango
-                        if (indiceTarea < 1 || indiceTarea > tareas.size()) {
-                            cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
-                            cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
-                            cout << "\nPresione Enter para continuar...";
-                            cin.get();
-                        }
-                        else {
-                            cout << "Nuevo titulo: ";
-                            getline(cin, titulo);
-                            cout << "Nueva descripcion: ";
-                            getline(cin, descripcion);
-                            cout << "Nueva fecha (YYYY-MM-DD): ";
-                            getline(cin, fecha);
+                    mostrarTareas();
+                    int indiceTarea;
+                    string titulo, descripcion, fecha;
 
-                            tareas[indiceTarea - 1]->ActualizarTarea(titulo, descripcion, fecha);
-                            cout << "\nPresione Enter para continuar...";
-                            cin.get();
-                        }
+                    cout << "\nNumero de tarea a actualizar: ";
+
+                    // Validar que la entrada sea un número
+                    if (!(cin >> indiceTarea)) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << BRIGHT_RED << "\nError: Debe ingresar un numero valido" << RESET << endl;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.get();
+                        break;
+                    }
+
+                    cin.ignore();
+
+                    // Validar que el índice esté en rango
+                    if (indiceTarea < 1 || indiceTarea > tareas.size()) {
+                        cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
+                        cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.get();
                     }
                     else {
+                        cout << "Nuevo titulo: ";
+                        getline(cin, titulo);
+                        cout << "Nueva descripcion: ";
+                        getline(cin, descripcion);
+                        cout << "Nueva fecha (YYYY-MM-DD): ";
+                        getline(cin, fecha);
+
+                        tareas[indiceTarea - 1]->ActualizarTarea(titulo, descripcion, fecha);
                         cout << "\nPresione Enter para continuar...";
                         cin.get();
                     }
@@ -385,30 +408,58 @@ public:
                 }
             case 4:  // Cambiar estado de tarea
                 system("cls"); {
+                    if (tareas.empty()) {
+                        cout << BRIGHT_RED << "No hay tareas para cambiar estado" << RESET << endl;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                        break;
+                    }
+
                     mostrarTareas();
-                    if (!tareas.empty()) {
-                        int indiceTarea;
-                        char estado;
-                        cout << "\nNumero de tarea: ";
-                        cin >> indiceTarea;
-                        if (indiceTarea > 0 && indiceTarea <= tareas.size()) {
-                            cout << "Marcar como completada? (s/n): ";
-                            cin >> estado;
-                            tareas[indiceTarea - 1]->setEstado(estado == 's' || estado == 'S');
-                            cout << "Estado actualizado" << endl;
-                            cout << "\nPresione Enter para continuar...";
-                            cin.ignore();
-                            cin.get();
-                        }
-                        else {
-                            cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
-                            cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
-                            cout << "\nPresione Enter para continuar...";
-                            cin.ignore();
-                            cin.get();
-                        }
+                    int indiceTarea;
+                    char estado;
+
+                    cout << "\nNumero de tarea: ";
+
+                    // Validar que la entrada sea un número
+                    if (!(cin >> indiceTarea)) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << BRIGHT_RED << "\nError: Debe ingresar un numero valido" << RESET << endl;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.get();
+                        break;
+                    }
+
+                    // Validar que el índice esté en rango
+                    if (indiceTarea < 1 || indiceTarea > tareas.size()) {
+                        cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
+                        cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
                     }
                     else {
+                        bool estadoValido = false;
+
+                        while (!estadoValido) {
+                            cout << "Marcar como completada? (s/n): ";
+                            cin >> estado;
+
+                            // Validar que solo sea 's', 'S', 'n' o 'N'
+                            if (estado == 's' || estado == 'S' || estado == 'n' || estado == 'N') {
+                                tareas[indiceTarea - 1]->setEstado(estado == 's' || estado == 'S');
+                                cout << BRIGHT_GREEN << "Estado actualizado" << RESET << endl;
+                                estadoValido = true;
+                            }
+                            else {
+                                cout << BRIGHT_RED << "\nError: Debe ingresar 's' para Si o 'n' para No" << RESET << endl;
+                                cin.clear();
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            }
+                        }
+
                         cout << "\nPresione Enter para continuar...";
                         cin.ignore();
                         cin.get();
