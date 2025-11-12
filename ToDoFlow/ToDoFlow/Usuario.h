@@ -57,6 +57,41 @@ public:
         cout << "Correo: " << Correo << endl;
     }
 
+    // Método estático para validar y obtener un ID válido
+    static int obtenerIdValidoParaCreacion() {
+        int id;
+        bool idValido = false;
+
+        while (!idValido) {
+            cout << "ID del usuario: ";
+
+            // Verifica que la entrada sea un número entero
+            if (!(cin >> id)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nError: Debe ingresar un numero entero" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            // Verifica que no sea negativo
+            if (id < 1) {
+                cout << "\nError: El ID debe ser mayor a 0" << endl;
+                cout << "Presione Enter para intentar de nuevo...";
+                cin.ignore();
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            idValido = true;
+        }
+
+        return id;
+    }
+
     // Método estático para crear un usuario mediante menú interactivo
     // Retorna un puntero al nuevo usuario creado
     static Usuario* menuCrearUsuario() {
@@ -64,8 +99,9 @@ public:
         string nombre, correo;
 
         cout << "\n--- CREAR NUEVO USUARIO ---" << endl;
-        cout << "ID del usuario: ";
-        cin >> id;
+
+        // Obtener ID con validación
+        id = obtenerIdValidoParaCreacion();
         cin.ignore();  // Limpiar buffer
 
         cout << "Nombre: ";
@@ -96,5 +132,4 @@ public:
         );
     }
 };
-
 #endif
