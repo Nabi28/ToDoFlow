@@ -2,16 +2,9 @@
     "sistema": "Gestion de Tareas",
     "tableros": [
         {
-            "fecha_creacion": "",
-            "id": 2147483647,
-            "nombre": "",
-            "prioridad": false,
-            "tareas": []
-        },
-        {
-            "fecha_creacion": "1111111",
-            "id": 891268732,
-            "nombre": "skibidi",
+            "fecha_creacion": "2025-11-12",
+            "id": 1,
+            "nombre": "1",
             "prioridad": false,
             "tareas": []
         }
