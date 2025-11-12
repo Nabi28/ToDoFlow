@@ -203,6 +203,7 @@ int main() {
         cout << "4. Exportar Datos" << endl;
         cout << "5. Importar Datos" << endl;
         cout << "6. Eliminar Archivos" << endl;
+        cout << "6. Eliminar Archivos " << endl;
         cout << "0. Salir" << endl;
         cout << BRIGHT_BLUE << "========================================" << RESET << endl;
         cout << "Seleccione una opcion: ";
