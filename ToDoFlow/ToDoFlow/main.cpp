@@ -4,14 +4,12 @@
 #include "Tarea.h"
 #include "Tablero.h"
 
-
 #define BRIGHT_RED     "\033[91m"
 #define BRIGHT_GREEN   "\033[92m"
 #define BRIGHT_BLUE    "\033[94m"
 #define BRIGHT_MAGENTA "\033[95m"
 #define BRIGHT_CYAN    "\033[96m"
 #define RESET "\033[0m"
-
 
 //  CLASE PARA GESTIONAR LOS TABLEROS CON JSON
 class GestorTableros {
@@ -42,7 +40,7 @@ private:
             }
         }
         catch (json::parse_error& e) {
-            cout << "Error al cargar tableros: " << e.what() << endl;
+            cout << BRIGHT_RED << "Error al cargar tableros: " << e.what() << RESET << endl;
         }
     }
 
@@ -194,6 +192,7 @@ int main() {
 
 
     do {
+        system("cls");  // Limpiar pantalla antes de mostrar el menú
         //  El menú principal
         cout << BRIGHT_BLUE << "\n========================================" << RESET << endl;
         cout << BRIGHT_MAGENTA << "  SISTEMA DE GESTION DE TAREAS" << RESET << endl;
@@ -213,7 +212,9 @@ int main() {
         if (cin.fail()) {
             cin.clear();  // Limpia el estado de error
             cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Limpia buffer
-            cout << BRIGHT_RED << "Opcion invalida. Intente nuevamente." << endl;
+            cout << BRIGHT_RED << "Opcion invalida. Intente nuevamente." << RESET << endl;
+            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+            cin.get();
             continue;  // Vuelve al inicio del bucle
         }
 
@@ -229,6 +230,7 @@ int main() {
 
                 // Submenú de tableros
                 do {
+                    system("cls");  // Limpiar pantalla antes de mostrar el menú
                     cout << BRIGHT_MAGENTA << "\n--- MENU TABLEROS ---" << RESET << endl;
                     cout << "1. Crear Tablero" << endl;
                     cout << "2. Eliminar Tablero" << endl;
@@ -245,51 +247,92 @@ int main() {
                         cin.clear();
                         cin.ignore(numeric_limits<streamsize>::max(), '\n');
                         cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
+                        cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                        cin.ignore();
+                        cin.get();
                         continue;
                     }
 
                     switch (opcionTablero) {
                     case 1:  // Crear tablero
                         system("cls"); {
-                            Tablero* nuevoTablero = Tablero::menuCrearTablero();
+                            Tablero* nuevoTablero = Tablero::menuCrearTablero(gestorTableros);
                             gestorTableros->agregarTablero(nuevoTablero);
                             nuevoTablero->CrearTablero();
+                            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                            cin.ignore();
+                            cin.get();
                             break;
                         }
                     case 2:  // Eliminar tablero
                         system("cls"); {
+                            if (tableros.empty()) {
+                                cout << BRIGHT_RED << "No hay tableros para eliminar" << RESET << endl;
+                                cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                                cin.ignore();
+                                cin.get();
+                                break;
+                            }
+
                             int id;
                             cout << BRIGHT_RED << "ID del tablero a eliminar: " << RESET;
                             cin >> id;
 
                             // Busca el tablero por ID
+                            bool encontrado = false;
                             for (int i = 0; i < tableros.size(); i++) {
                                 if (tableros[i]->getIdTablero() == id) {
                                     gestorTableros->eliminarTablero(i);
                                     cout << BRIGHT_GREEN << "Tablero eliminado exitosamente" << RESET << endl;
+                                    encontrado = true;
                                     break;
                                 }
                             }
+
+                            if (!encontrado) {
+                                cout << BRIGHT_RED << "Error: El tablero con ID " << id << " no existe" << RESET << endl;
+                            }
+
+                            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                            cin.ignore();
+                            cin.get();
                             break;
                         }
                     case 3:  // Modificar tablero
                         system("cls"); {
+                            if (tableros.empty()) {
+                                cout << BRIGHT_RED << "No hay tableros para modificar" << RESET << endl;
+                                cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                                cin.ignore();
+                                cin.get();
+                                break;
+                            }
+
                             int id;
                             string nuevoNombre;
-                            cout << BRIGHT_GREEN << "ID del tablero a modificar: " RESET;
+                            cout << BRIGHT_GREEN << "ID del tablero a modificar: " << RESET;
                             cin >> id;
                             cin.ignore();
 
                             // Busca y modifica el tablero
+                            bool encontrado = false;
                             for (auto tablero : tableros) {
                                 if (tablero->getIdTablero() == id) {
                                     cout << "Nuevo nombre: ";
                                     getline(cin, nuevoNombre);
                                     tablero->ModificarTablero(nuevoNombre);
                                     gestorTableros->guardar();  // Guarda automáticamente
+                                    encontrado = true;
                                     break;
                                 }
                             }
+
+                            if (!encontrado) {
+                                cout << BRIGHT_RED << "Error: El tablero con ID " << id << " no existe" << RESET << endl;
+                            }
+
+                            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                            cin.get();
                             break;
                         }
                     case 4:  // Mostrar tableros
@@ -305,48 +348,90 @@ int main() {
                                     tableros[i]->mostrarInfo();
                                 }
                             }
+                            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                            cin.ignore();
+                            cin.get();
                             break;
                         }
                     case 5:  // Cambiar prioridad
                         system("cls"); {
+                            if (tableros.empty()) {
+                                cout << BRIGHT_RED << "No hay tableros para cambiar prioridad" << RESET << endl;
+                                cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                                cin.ignore();
+                                cin.get();
+                                break;
+                            }
+
                             int id;
                             char opcionPrioridad;
                             cout << "ID del tablero: ";
                             cin >> id;
 
                             // Busca y cambia prioridad
+                            bool encontrado = false;
                             for (auto tablero : tableros) {
                                 if (tablero->getIdTablero() == id) {
                                     cout << "Establecer prioridad? (s/n): ";
                                     cin >> opcionPrioridad;
                                     tablero->setPrioridad(opcionPrioridad == 's' || opcionPrioridad == 'S');
-                                    cout << "Prioridad actualizada" << endl;
+                                    cout << BRIGHT_GREEN << "Prioridad actualizada" << RESET << endl;
                                     gestorTableros->guardar();  // Guarda automáticamente
+                                    encontrado = true;
                                     break;
                                 }
                             }
+
+                            if (!encontrado) {
+                                cout << BRIGHT_RED << "Error: El tablero con ID " << id << " no existe" << RESET << endl;
+                            }
+
+                            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                            cin.ignore();
+                            cin.get();
                             break;
                         }
                     case 6:  // Gestionar tareas de un tablero
                         system("cls"); {
+                            if (tableros.empty()) {
+                                cout << BRIGHT_RED << "No hay tableros creados" << RESET << endl;
+                                cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                                cin.ignore();
+                                cin.get();
+                                break;
+                            }
+
                             int id;
                             cout << "ID del tablero: ";
                             cin >> id;
 
                             // Busca el tablero y abre su menú de tareas
+                            bool tableroEncontrado = false;
                             for (auto tablero : tableros) {
                                 if (tablero->getIdTablero() == id) {
-                                    tablero->menuTareas();
+                                    tableroEncontrado = true;
+                                    tablero->menuTareas(contenedorUsuarios);  // PASA EL CONTENEDOR
                                     gestorTableros->guardar();  // Guarda automáticamente después
                                     break;
                                 }
                             }
+
+                            if (!tableroEncontrado) {
+                                cout << BRIGHT_RED << "Tablero con ID " << id << " no encontrado" << RESET << endl;
+                                cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                                cin.ignore();
+                                cin.get();
+                            }
                             break;
                         }
                     case 0:  // Volver
+                        system("cls");
                         break;
                     default:
                         cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
+                        cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                        cin.ignore();
+                        cin.get();
                     }
                 } while (opcionTablero != 0);
                 break;
@@ -381,7 +466,7 @@ int main() {
                 int tipoExportar;
                 string nombreArchivo;
 
-                cout << BRIGHT_MAGENTA << "\n--- EXPORTAR DATOS ---" << RESET << endl;
+                cout << "\n--- EXPORTAR DATOS ---" << endl;
                 cout << "1. Exportar Usuarios" << endl;
                 cout << "2. Exportar Tableros" << endl;
                 cout << "3. Exportar Todo" << endl;
@@ -395,14 +480,14 @@ int main() {
                     cout << "Nombre del archivo: ";
                     getline(cin, nombreArchivo);
                     contenedorUsuarios->exportarJson(nombreArchivo);
-                    cout <<  BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                    cout << "\nPresione Enter para continuar...";
                     cin.get();
                     break;
                 case 2:  // Exportar tableros
                     cout << "Nombre del archivo: ";
                     getline(cin, nombreArchivo);
                     gestorTableros->exportarJson(nombreArchivo);
-                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." RESET;
+                    cout << "\nPresione Enter para continuar...";
                     cin.get();
                     break;
                 case 3:  // Exportar todo
@@ -411,13 +496,13 @@ int main() {
                     contenedorUsuarios->exportarJson(nombreArchivo + "_usuarios.json");
                     gestorTableros->exportarJson(nombreArchivo + "_tableros.json");
                     cout << "Datos exportados exitosamente" << endl;
-                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." RESET;
+                    cout << "\nPresione Enter para continuar...";
                     cin.get();
                     break;
                 case 0:  // Volver
                     break;
                 default:
-                    cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
+                    cout << "Opcion invalida" << endl;
                 }
 
                 system("cls");
@@ -429,7 +514,7 @@ int main() {
                 int tipoImportar;
                 string nombreArchivo;
 
-                cout << BRIGHT_MAGENTA <<"\n--- IMPORTAR DATOS ---" << RESET << endl;
+                cout << "\n--- IMPORTAR DATOS ---" << endl;
                 cout << "1. Importar Usuarios" << endl;
                 cout << "2. Importar Tableros" << endl;
                 cout << "0. Volver" << endl;
@@ -442,20 +527,20 @@ int main() {
                     cout << "Nombre del archivo: ";
                     getline(cin, nombreArchivo);
                     contenedorUsuarios->importarJson(nombreArchivo);
-                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                    cout << "\nPresione Enter para continuar...";
                     cin.get();
                     break;
                 case 2:  // Importar tableros
                     cout << "Nombre del archivo: ";
                     getline(cin, nombreArchivo);
                     gestorTableros->importarJson(nombreArchivo);
-                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
+                    cout << "\nPresione Enter para continuar...";
                     cin.get();
                     break;
                 case 0:  // Volver
                     break;
                 default:
-                    cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
+                    cout << "Opcion invalida" << endl;
                 }
 
                 system("cls");
@@ -465,18 +550,18 @@ int main() {
         case 6:  // Eliminar archivos JSON
             system("cls"); {
                 char confirmacion;
-                cout << BRIGHT_RED << "ADVERTENCIA:" << RESET << "Se eliminaran TODOS los archivos JSON" << endl;
+                cout << "ADVERTENCIA: Se eliminaran TODOS los archivos JSON" << endl;
                 cout << "Esta seguro? (s/n): ";
                 cin >> confirmacion;
 
                 if (confirmacion == 's' || confirmacion == 'S') {
                     contenedorUsuarios->eliminarArchivoJson();
                     gestorTableros->eliminarArchivoJson();
-                    cout << BRIGHT_RED << "Archivos eliminados" << RESET << endl;
+                    cout << "Archivos eliminados" << endl;
                 }
 
                 // Pausa para que el usuario pueda leer el resultado
-                cout << BRIGHT_CYAN << "\nPresione Enter para volver al menu..."<< RESET;
+                cout << "\nPresione Enter para volver al menu...";
                 cin.ignore();
                 cin.get();
                 system("cls");
@@ -484,11 +569,15 @@ int main() {
             }
 
         case 0:  // Salir
-            cout <<  "\nSaliendo del sistema..." << endl;
+            system("cls");
+            cout << "\nSaliendo del sistema..." << endl;
             break;
 
         default:
-            cout << BRIGHT_RED << "Opcion invalida" << RESET <<  endl;
+            cout << "Opcion invalida" << endl;
+            cout << "\nPresione Enter para continuar...";
+            cin.ignore();
+            cin.get();
         }
     } while (opcion != 0);  // Continúa hasta que el usuario elija salir
 
