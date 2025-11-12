@@ -2,6 +2,14 @@
 #ifndef CONTENEDORUSUARIO_H
 #define CONTENEDORUSUARIO_H
 
+// Colores para la consola
+#define BRIGHT_RED     "\033[91m"
+#define BRIGHT_GREEN   "\033[92m"
+#define BRIGHT_BLUE    "\033[94m"
+#define BRIGHT_MAGENTA "\033[95m"
+#define BRIGHT_CYAN    "\033[96m"
+#define RESET "\033[0m"
+
 #include "Librerias.h"
 #include "Usuario.h"
 
@@ -34,12 +42,12 @@ private:
                     Usuario* usuario = Usuario::fromJson(usuarioJson);
                     usuarios.push_back(usuario);
                 }
-                cout << "Datos cargados desde " << archivoJson << endl;
+                cout << BRIGHT_BLUE << "Datos cargados desde " << archivoJson << RESET << endl;
             }
         }
         catch (json::parse_error& e) {
             // Si hay error al parsear, ignora y continúa
-            cout << "Error al cargar datos: " << e.what() << endl;
+            cout << BRIGHT_RED << "Error al cargar datos: " << e.what() << RESET << endl;
         }
     }
 
@@ -63,7 +71,7 @@ private:
             archivo.close();
         }
         else {
-            cout << "Error al guardar datos" << endl;
+            cout << BRIGHT_RED << "Error al guardar datos" << RESET << endl;
         }
     }
 
@@ -129,8 +137,8 @@ private:
             if (!(cin >> id)) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "\nError: Debe ingresar un numero entero" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_RED << "\nError:" << RESET << " Debe ingresar un numero entero" << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                 cin.get();
                 cout << endl;
                 continue;
@@ -138,7 +146,7 @@ private:
 
             // Verifica que no sea negativo
             if (id < 0) {
-                cout << "\nError: El ID no puede ser negativo" << endl;
+                cout << BRIGHT_RED << "\nError:"<< RESET <<"El ID no puede ser negativo" << endl;
                 cout << "Presione Enter para intentar de nuevo...";
                 cin.ignore();
                 cin.get();

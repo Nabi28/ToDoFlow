@@ -3,7 +3,7 @@
 #define TAREA_H
 
 #include "Librerias.h"
-
+// colores para la consola
 #define BRIGHT_RED     "\033[91m"
 #define BRIGHT_GREEN   "\033[92m"
 #define BRIGHT_BLUE    "\033[94m"
@@ -94,6 +94,56 @@ public:
         cout << "Estado: " << (Estado ? "Completada" : "Pendiente") << endl;
     }
 
+    // Método auxiliar para validar formato y que la fecha no sea pasada
+    static bool validarFecha(const string& fecha) {
+        // Verifica formato básico YYYY-MM-DD (longitud 10)
+        if (fecha.length() != 10 || fecha[4] != '-' || fecha[7] != '-') {
+            return false;
+        }
+
+        // Extrae año, mes y día
+        int ano, mes, dia;
+        try {
+            ano = stoi(fecha.substr(0, 4));
+            mes = stoi(fecha.substr(5, 2));
+            dia = stoi(fecha.substr(8, 2));
+        }
+        catch (...) {
+            return false;
+        }
+
+        // Valida rangos básicos
+        if (ano < 1900 || ano > 9999 || mes < 1 || mes > 12 || dia < 1 || dia > 31) {
+            return false;
+        }
+
+        // Obtiene la fecha actual del sistema (versión segura)
+        time_t ahora = time(0);
+        tm fechaActual;
+        localtime_s(&fechaActual, &ahora);
+
+        int anoActual = fechaActual.tm_year + 1900;
+        int mesActual = fechaActual.tm_mon + 1;
+        int diaActual = fechaActual.tm_mday;
+
+        // Compara con la fecha actual
+        if (ano < anoActual) {
+            return false;  // Año pasado
+        }
+        else if (ano == anoActual) {
+            if (mes < mesActual) {
+                return false;  // Mes pasado
+            }
+            else if (mes == mesActual) {
+                if (dia < diaActual) {
+                    return false;  // Día pasado
+                }
+            }
+        }
+
+        return true;
+    }
+
     // Método estático para validar y obtener un ID de usuario válido
     // Recibe un puntero a ContenedorUsuario para verificar existencia
     template<typename ContenedorUsuario>
@@ -153,6 +203,7 @@ public:
     static Tarea* menuCrearTarea(ContenedorUsuario* contenedor) {
         int idUsuario;
         string titulo, descripcion, fecha;
+        bool fechaValida = false;
 
         cout << BRIGHT_MAGENTA << "\n--- CREAR NUEVA TAREA ---" << RESET << endl;
 
@@ -160,15 +211,30 @@ public:
         idUsuario = obtenerIdUsuarioValido(contenedor);
         cin.ignore();  // Limpiar el buffer de entrada
 
-        // Solicitar datos al usuario
+        // Solicitar título
         cout << "Titulo de la tarea: ";
         getline(cin, titulo);
 
+        // Solicitar descripción
         cout << "Descripcion: ";
         getline(cin, descripcion);
 
-        cout << "Fecha de vencimiento (YYYY-MM-DD): ";
-        getline(cin, fecha);
+        // Validación de la fecha de vencimiento
+        while (!fechaValida) {
+            cout << "Fecha de vencimiento (YYYY-MM-DD): ";
+            getline(cin, fecha);
+
+            if (!validarFecha(fecha)) {
+                cout << BRIGHT_RED << "\nError: Formato de fecha invalido o la fecha es anterior a hoy" << RESET << endl;
+                cout << BRIGHT_CYAN << "Use el formato YYYY-MM-DD y asegurese de ingresar la fecha de hoy o una fecha futura" << RESET << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
+                cin.get();
+                cout << endl;
+                continue;
+            }
+
+            fechaValida = true;
+        }
 
         // Crear y retornar un puntero a la nueva tarea
         return new Tarea(idUsuario, titulo, descripcion, fecha);

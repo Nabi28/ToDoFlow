@@ -202,7 +202,6 @@ int main() {
         cout << "3. Mostrar Todo" << endl;
         cout << "4. Exportar Datos" << endl;
         cout << "5. Importar Datos" << endl;
-        cout << "6. Eliminar Archivos" << endl;
         cout << "6. Eliminar Archivos " << endl;
         cout << "0. Salir" << endl;
         cout << BRIGHT_BLUE << "========================================" << RESET << endl;
@@ -373,18 +372,35 @@ int main() {
                             bool encontrado = false;
                             for (auto tablero : tableros) {
                                 if (tablero->getIdTablero() == id) {
-                                    cout << "Establecer prioridad? (s/n): ";
-                                    cin >> opcionPrioridad;
-                                    tablero->setPrioridad(opcionPrioridad == 's' || opcionPrioridad == 'S');
-                                    cout << BRIGHT_GREEN << "Prioridad actualizada" << RESET << endl;
-                                    gestorTableros->guardar();  // Guarda automáticamente
+                                    bool prioridadValida = false;
+
+                                    // Bucle de validación para solo aceptar 's' o 'n'
+                                    while (!prioridadValida) {
+                                        cout << "Establecer prioridad? (s/n): ";
+                                        cin >> opcionPrioridad;
+
+                                        // Valida que solo sea 's', 'S', 'n' o 'N'
+                                        if (opcionPrioridad == 's' || opcionPrioridad == 'S' ||
+                                            opcionPrioridad == 'n' || opcionPrioridad == 'N') {
+                                            tablero->setPrioridad(opcionPrioridad == 's' || opcionPrioridad == 'S');
+                                            cout << BRIGHT_GREEN << "Prioridad actualizada" << RESET << endl;
+                                            gestorTableros->guardar();  // Guarda automáticamente
+                                            prioridadValida = true;
+                                        }
+                                        else {
+                                            cout << BRIGHT_RED << "\nError: Debe ingresar 's' para Si o 'n' para No" << RESET << endl;
+                                            cin.clear();
+                                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                        }
+                                    }
+
                                     encontrado = true;
                                     break;
                                 }
                             }
 
                             if (!encontrado) {
-                                cout << BRIGHT_RED << "Error: El tablero con ID " << id << " no existe" << RESET << endl;
+                                cout << BRIGHT_RED << "Error:" << RESET <<" El tablero con ID " << id << " no existe" << endl;
                             }
 
                             cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
@@ -503,7 +519,7 @@ int main() {
                 case 0:  // Volver
                     break;
                 default:
-                    cout << "Opcion invalida" << endl;
+                    cout << BRIGHT_RED << "Opcion invalida" <<  RESET <<endl;
                 }
 
                 system("cls");
@@ -528,20 +544,20 @@ int main() {
                     cout << "Nombre del archivo: ";
                     getline(cin, nombreArchivo);
                     contenedorUsuarios->importarJson(nombreArchivo);
-                    cout << "\nPresione Enter para continuar...";
+                    cout << BRIGHT_CYAN "\nPresione Enter para continuar..." << RESET;
                     cin.get();
                     break;
                 case 2:  // Importar tableros
                     cout << "Nombre del archivo: ";
                     getline(cin, nombreArchivo);
                     gestorTableros->importarJson(nombreArchivo);
-                    cout << "\nPresione Enter para continuar...";
+                    cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
                     cin.get();
                     break;
                 case 0:  // Volver
                     break;
                 default:
-                    cout << "Opcion invalida" << endl;
+                    cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
                 }
 
                 system("cls");
@@ -551,18 +567,18 @@ int main() {
         case 6:  // Eliminar archivos JSON
             system("cls"); {
                 char confirmacion;
-                cout << "ADVERTENCIA: Se eliminaran TODOS los archivos JSON" << endl;
+                cout << BRIGHT_RED<< "ADVERTENCIA:" << RESET <<" Se eliminaran TODOS los archivos JSON" << endl;
                 cout << "Esta seguro? (s/n): ";
                 cin >> confirmacion;
 
                 if (confirmacion == 's' || confirmacion == 'S') {
                     contenedorUsuarios->eliminarArchivoJson();
                     gestorTableros->eliminarArchivoJson();
-                    cout << "Archivos eliminados" << endl;
+                    cout << BRIGHT_RED << "Archivos eliminados" << RESET << endl;
                 }
 
                 // Pausa para que el usuario pueda leer el resultado
-                cout << "\nPresione Enter para volver al menu...";
+                cout << BRIGHT_CYAN << "\nPresione Enter para volver al menu..." << RESET;
                 cin.ignore();
                 cin.get();
                 system("cls");
@@ -571,12 +587,12 @@ int main() {
 
         case 0:  // Salir
             system("cls");
-            cout << "\nSaliendo del sistema..." << endl;
+            cout << BRIGHT_CYAN << "\nSaliendo del sistema..." << RESET << endl;
             break;
 
         default:
-            cout << "Opcion invalida" << endl;
-            cout << "\nPresione Enter para continuar...";
+            cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
+            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." <<RESET;
             cin.ignore();
             cin.get();
         }
