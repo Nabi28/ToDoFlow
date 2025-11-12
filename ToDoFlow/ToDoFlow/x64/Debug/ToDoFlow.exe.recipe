@@ -2,11 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-<<<<<<< HEAD
       <FullPath>C:\github proyecto\ToDoFlow\ToDoFlow\x64\Debug\ToDoFlow.exe</FullPath>
-=======
-      <FullPath>D:\Github\Proyecto progra\ToDoFlow\ToDoFlow\x64\Debug\ToDoFlow.exe</FullPath>
->>>>>>> c1cd5f004e435c616cd1cc9f862a3f158b0ddaa8
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
