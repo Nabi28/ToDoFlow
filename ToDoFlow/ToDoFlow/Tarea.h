@@ -4,6 +4,13 @@
 
 #include "Librerias.h"
 
+#define BRIGHT_RED     "\033[91m"
+#define BRIGHT_GREEN   "\033[92m"
+#define BRIGHT_BLUE    "\033[94m"
+#define BRIGHT_MAGENTA "\033[95m"
+#define BRIGHT_CYAN    "\033[96m"
+#define RESET "\033[0m"
+
 // Clase que representa una tarea individual
 class Tarea {
 private:
@@ -24,7 +31,7 @@ public:
 
     // Método para confirmar la creación de una tarea
     void CrearTarea() {
-        cout << "Tarea creada: " << TituloTarea << endl;
+        cout << BRIGHT_GREEN << "Tarea creada: " << TituloTarea << RESET << endl;
     }
 
     // Método para actualizar los datos de una tarea existente
@@ -32,12 +39,12 @@ public:
         this->TituloTarea = titulo;
         this->Descripcion = descripcion;
         this->FechaVencimiento = fecha;
-        cout << "Tarea actualizada exitosamente" << endl;
+        cout << BRIGHT_GREEN << "Tarea actualizada exitosamente" << RESET << endl;
     }
 
     // Método para notificar la eliminación de una tarea
     void BorrarTarea() {
-        cout << "Tarea '" << TituloTarea << "' eliminada" << endl;
+        cout << BRIGHT_RED << "Tarea '" << TituloTarea << "' eliminada" << RESET << endl;
     }
 
     // Getter: obtiene el estado de la tarea
@@ -52,7 +59,7 @@ public:
 
     // Método para buscar una tarea (simulación)
     void BuscarTarea() {
-        cout << "Buscando tarea: " << TituloTarea << endl;
+        cout << BRIGHT_BLUE << "Buscando tarea: " << TituloTarea << RESET << endl;
     }
 
     // Getter: obtiene el título de la tarea
@@ -72,11 +79,11 @@ public:
 
     // Método para mostrar toda la información de la tarea
     void mostrarInfo() {
-        cout << "Titulo: " << TituloTarea << endl;
-        cout << "Descripcion: " << Descripcion << endl;
-        cout << "Fecha de Vencimiento: " << FechaVencimiento << endl;
+        cout << BRIGHT_CYAN << "Titulo: " << TituloTarea << RESET << endl;
+        cout << BRIGHT_CYAN << "Descripcion: " << Descripcion << RESET << endl;
+        cout << BRIGHT_CYAN << "Fecha de Vencimiento: " << FechaVencimiento << RESET << endl;
         // Operador ternario: si Estado es true, muestra "Completada", sino "Pendiente"
-        cout << "Estado: " << (Estado ? "Completada" : "Pendiente") << endl;
+        cout << BRIGHT_CYAN << "Estado: " << RESET << (Estado ? "Completada" : "Pendiente") << endl;
     }
 
     // Método estático para crear una tarea mediante menú interactivo
@@ -84,17 +91,17 @@ public:
     static Tarea* menuCrearTarea() {
         string titulo, descripcion, fecha;
 
-        cout << "\n--- CREAR NUEVA TAREA ---" << endl;
+        cout << BRIGHT_MAGENTA << "\n--- CREAR NUEVA TAREA ---" << RESET << endl;
         cin.ignore();  // Limpiar el buffer de entrada
 
         // Solicitar datos al usuario
-        cout << "Titulo de la tarea: ";
+        cout << BRIGHT_CYAN << "Titulo de la tarea: ";
         getline(cin, titulo);
 
-        cout << "Descripcion: ";
+        cout << BRIGHT_CYAN << "Descripcion: ";
         getline(cin, descripcion);
 
-        cout << "Fecha de vencimiento (YYYY-MM-DD): ";
+        cout << BRIGHT_CYAN << "Fecha de vencimiento (YYYY-MM-DD): ";
         getline(cin, fecha);
 
         // Crear y retornar un puntero a la nueva tarea
