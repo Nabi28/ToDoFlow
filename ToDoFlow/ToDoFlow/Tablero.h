@@ -325,7 +325,16 @@ public:
                         int indiceTarea;
                         cout << "\nNumero de tarea a eliminar: ";
                         cin >> indiceTarea;
-                        eliminarTarea(indiceTarea - 1);  // -1 porque el índice empieza en 0
+
+                        // Validar que el índice esté en rango
+                        if (indiceTarea < 1 || indiceTarea > tareas.size()) {
+                            cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
+                            cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
+                        }
+                        else {
+                            eliminarTarea(indiceTarea - 1);  // -1 porque el índice empieza en 0
+                        }
+
                         cout << "\nPresione Enter para continuar...";
                         cin.ignore();
                         cin.get();
@@ -348,7 +357,14 @@ public:
                         cin >> indiceTarea;
                         cin.ignore();
 
-                        if (indiceTarea > 0 && indiceTarea <= tareas.size()) {
+                        // Validar que el índice esté en rango
+                        if (indiceTarea < 1 || indiceTarea > tareas.size()) {
+                            cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
+                            cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
+                            cout << "\nPresione Enter para continuar...";
+                            cin.get();
+                        }
+                        else {
                             cout << "Nuevo titulo: ";
                             getline(cin, titulo);
                             cout << "Nueva descripcion: ";
@@ -380,6 +396,13 @@ public:
                             cin >> estado;
                             tareas[indiceTarea - 1]->setEstado(estado == 's' || estado == 'S');
                             cout << "Estado actualizado" << endl;
+                            cout << "\nPresione Enter para continuar...";
+                            cin.ignore();
+                            cin.get();
+                        }
+                        else {
+                            cout << BRIGHT_RED << "\nError: La tarea #" << indiceTarea << " no existe" << RESET << endl;
+                            cout << BRIGHT_RED << "Debe ingresar un numero entre 1 y " << tareas.size() << RESET << endl;
                             cout << "\nPresione Enter para continuar...";
                             cin.ignore();
                             cin.get();
