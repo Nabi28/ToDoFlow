@@ -77,8 +77,8 @@ public:
             if (!(cin >> id)) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "\nError: Debe ingresar un numero entero" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_RED <<  "\nError:"<< RESET << "Debe ingresar un numero entero" << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..."<< RESET;
                 cin.get();
                 cout << endl;
                 continue;
@@ -86,8 +86,8 @@ public:
 
             // Verifica que no sea negativo
             if (id < 0) {
-                cout << "\nError: El ID no puede ser negativo" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_RED "\nError:" << RESET <<" El ID no puede ser negativo" << endl;
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." RESET;
                 cin.ignore();
                 cin.get();
                 cout << endl;

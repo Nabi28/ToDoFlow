@@ -310,6 +310,8 @@ int main() {
 
                             int id;
                             string nuevoNombre;
+                            bool nombreValido = false;
+
                             cout << BRIGHT_GREEN << "ID del tablero a modificar: " << RESET;
                             cin >> id;
                             cin.ignore();
@@ -318,8 +320,22 @@ int main() {
                             bool encontrado = false;
                             for (auto tablero : tableros) {
                                 if (tablero->getIdTablero() == id) {
-                                    cout << "Nuevo nombre: ";
-                                    getline(cin, nuevoNombre);
+                                    // Validar que el nuevo nombre no esté vacío
+                                    while (!nombreValido) {
+                                        cout << "Nuevo nombre: ";
+                                        getline(cin, nuevoNombre);
+
+                                        // Verificar que no esté vacío o solo contenga espacios
+                                        if (nuevoNombre.empty() || nuevoNombre.find_first_not_of(' ') == string::npos) {
+                                            cout << BRIGHT_RED << "\nError: El nombre no puede estar vacio" << RESET << endl;
+                                            cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
+                                            cin.get();
+                                            cout << endl;
+                                            continue;
+                                        }
+                                        nombreValido = true;
+                                    }
+
                                     tablero->ModificarTablero(nuevoNombre);
                                     gestorTableros->guardar();  // Guarda automáticamente
                                     encontrado = true;
@@ -400,7 +416,7 @@ int main() {
                             }
 
                             if (!encontrado) {
-                                cout << BRIGHT_RED << "Error:" << RESET <<" El tablero con ID " << id << " no existe" << endl;
+                                cout << BRIGHT_RED << "Error:" << RESET << " El tablero con ID " << id << " no existe" << endl;
                             }
 
                             cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
@@ -519,7 +535,7 @@ int main() {
                 case 0:  // Volver
                     break;
                 default:
-                    cout << BRIGHT_RED << "Opcion invalida" <<  RESET <<endl;
+                    cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
                 }
 
                 system("cls");
@@ -567,7 +583,7 @@ int main() {
         case 6:  // Eliminar archivos JSON
             system("cls"); {
                 char confirmacion;
-                cout << BRIGHT_RED<< "ADVERTENCIA:" << RESET <<" Se eliminaran TODOS los archivos JSON" << endl;
+                cout << BRIGHT_RED << "ADVERTENCIA:" << RESET << " Se eliminaran TODOS los archivos JSON" << endl;
                 cout << "Esta seguro? (s/n): ";
                 cin >> confirmacion;
 
@@ -592,7 +608,7 @@ int main() {
 
         default:
             cout << BRIGHT_RED << "Opcion invalida" << RESET << endl;
-            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." <<RESET;
+            cout << BRIGHT_CYAN << "\nPresione Enter para continuar..." << RESET;
             cin.ignore();
             cin.get();
         }

@@ -147,7 +147,7 @@ private:
             // Verifica que no sea negativo
             if (id < 0) {
                 cout << BRIGHT_RED << "\nError:"<< RESET <<"El ID no puede ser negativo" << endl;
-                cout << "Presione Enter para intentar de nuevo...";
+                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..."<< RESET;
                 cin.ignore();
                 cin.get();
                 cout << endl;
@@ -157,8 +157,8 @@ private:
             // Verifica si el ID debe existir o no existir
             if (validarExistencia) {
                 if (!idExiste(id)) {
-                    cout << "\nError: El ID " << id << " no existe" << endl;
-                    cout << "Presione Enter para intentar de nuevo...";
+                    cout << BRIGHT_RED << "\nError:" << RESET <<" El ID " << id << " no existe" << endl;
+                    cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo...";
                     cin.ignore();
                     cin.get();
                     cout << endl;
@@ -167,8 +167,8 @@ private:
             }
             else {
                 if (idExiste(id)) {
-                    cout << "\nError: El ID " << id << " ya esta en uso" << endl;
-                    cout << "Presione Enter para intentar de nuevo...";
+                    cout << BRIGHT_RED << "\nError:" << RESET <<" El ID " << id << " ya esta en uso" << endl;
+                    cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
                     cin.ignore();
                     cin.get();
                     cout << endl;
@@ -192,7 +192,7 @@ private:
             getline(cin, nombre);
 
             if (!validarTexto(nombre)) {
-                cout << "\nError: El nombre no puede estar vacio ni contener simbolos especiales" << endl;
+                cout << BRIGHT_RED << "\nError:" << RESET << "El nombre no puede estar vacio ni contener simbolos especiales" << endl;
                 cout << "Presione Enter para intentar de nuevo...";
                 cin.get();
                 cout << endl;

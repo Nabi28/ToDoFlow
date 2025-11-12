@@ -15,6 +15,11 @@ private:
     bool Prioridad;             // Indica si el tablero tiene prioridad
     vector<Tarea*> tareas;      // Vector que almacena punteros a las tareas del tablero
 
+    // Método auxiliar para validar que un texto no esté vacío
+    static bool validarTextoNoVacio(const string& texto) {
+        return !texto.empty() && texto.find_first_not_of(' ') != string::npos;
+    }
+
 public:
     // Constructor: inicializa un tablero con id, nombre y fecha
     Tablero(int id, string nombre, string fecha) {
@@ -393,12 +398,55 @@ public:
                         cin.get();
                     }
                     else {
-                        cout << "Nuevo titulo: ";
-                        getline(cin, titulo);
-                        cout << "Nueva descripcion: ";
-                        getline(cin, descripcion);
-                        cout << "Nueva fecha (YYYY-MM-DD): ";
-                        getline(cin, fecha);
+                        bool tituloValido = false;
+                        bool descripcionValida = false;
+                        bool fechaValida = false;
+
+                        // Validar título no vacío
+                        while (!tituloValido) {
+                            cout << "Nuevo titulo: ";
+                            getline(cin, titulo);
+
+                            if (!validarTextoNoVacio(titulo)) {
+                                cout << BRIGHT_RED << "\nError: El titulo no puede estar vacio" << RESET << endl;
+                                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
+                                cin.get();
+                                cout << endl;
+                                continue;
+                            }
+                            tituloValido = true;
+                        }
+
+                        // Validar descripción no vacía
+                        while (!descripcionValida) {
+                            cout << "Nueva descripcion: ";
+                            getline(cin, descripcion);
+
+                            if (!validarTextoNoVacio(descripcion)) {
+                                cout << BRIGHT_RED << "\nError: La descripcion no puede estar vacia" << RESET << endl;
+                                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
+                                cin.get();
+                                cout << endl;
+                                continue;
+                            }
+                            descripcionValida = true;
+                        }
+
+                        // Validar fecha
+                        while (!fechaValida) {
+                            cout << "Nueva fecha (YYYY-MM-DD): ";
+                            getline(cin, fecha);
+
+                            if (!validarFecha(fecha)) {
+                                cout << BRIGHT_RED << "\nError: Formato de fecha invalido o la fecha es anterior a hoy" << RESET << endl;
+                                cout << BRIGHT_CYAN << "Use el formato YYYY-MM-DD y asegurese de ingresar la fecha de hoy o una fecha futura" << RESET << endl;
+                                cout << BRIGHT_CYAN << "Presione Enter para intentar de nuevo..." << RESET;
+                                cin.get();
+                                cout << endl;
+                                continue;
+                            }
+                            fechaValida = true;
+                        }
 
                         tareas[indiceTarea - 1]->ActualizarTarea(titulo, descripcion, fecha);
                         cout << "\nPresione Enter para continuar...";
