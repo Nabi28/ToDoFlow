@@ -1,0 +1,20 @@
+{
+    "sistema": "Gestion de Tareas",
+    "tableros": [
+        {
+            "fecha_creacion": "",
+            "id": 2147483647,
+            "nombre": "",
+            "prioridad": false,
+            "tareas": []
+        },
+        {
+            "fecha_creacion": "1111111",
+            "id": 891268732,
+            "nombre": "skibidi",
+            "prioridad": false,
+            "tareas": []
+        }
+    ],
+    "version": "1.0"
+}
