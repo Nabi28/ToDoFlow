@@ -67,6 +67,62 @@ private:
         }
     }
 
+    // ===== MÉTODOS DE VALIDACIÓN =====
+
+    // Verifica si un ID ya existe en el sistema
+    bool idExiste(int id) {
+        for (auto usuario : usuarios) {
+            if (usuario->getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Valida y obtiene un ID correcto del usuario
+    int obtenerIdValido(string mensaje, bool validarExistencia = true) {
+        int id;
+        bool idValido = false;
+
+        while (!idValido) {
+            cout << mensaje;
+
+            // Verifica que la entrada sea un número
+            if (!(cin >> id)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Error: Debe ingresar un numero entero" << endl;
+                continue;
+
+            }
+
+            // Verifica que no sea negativo
+            if (id < 0) {
+                cout << "Error: El ID no puede ser negativo" << endl;
+                continue;
+            }
+
+            // Verifica si el ID debe existir o no existir
+            if (validarExistencia) {
+                if (!idExiste(id)) {
+                    cout << "Error: El ID " << id << " no existe" << endl;
+                    continue;
+                }
+            }
+            else {
+                if (idExiste(id)) {
+                    cout << "Error: El ID " << id << " ya esta en uso" << endl;
+                    continue;
+                }
+            }
+
+            idValido = true;
+        }
+
+        return id;
+
+    }
+
 public:
     // Constructor: inicializa el contenedor y carga datos si existen
     ContenedorUsuario(string archivo = "usuarios.json") : archivoJson(archivo) {
@@ -257,26 +313,56 @@ public:
             case 1:  // Agregar usuario
                 system("cls"); {
                     Usuario* nuevoUsuario = Usuario::menuCrearUsuario();
-                    AnadirUsuario(nuevoUsuario);
+                    // Verificar que el ID no esté repetido
+                    if (idExiste(nuevoUsuario->getId())) {
+                        cout << "Error: El ID " << nuevoUsuario->getId() << " ya esta en uso" << endl;
+                        delete nuevoUsuario;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                    }
+                    else {
+                        AnadirUsuario(nuevoUsuario);
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                    }
                     break;
                 }
             case 2:  // Eliminar usuario
                 system("cls"); {
-                    int id;
-                    cout << "ID del usuario a eliminar: ";
-                    cin >> id;
+                    if (usuarios.empty()) {
+                        cout << "No hay usuarios para eliminar" << endl;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                        break;
+                    }
+                    MostrarDatos();
+                    cout << endl;
+                    int id = obtenerIdValido("ID del usuario a eliminar: ", true);
                     EliminarUsuario(id);
+                    cout << "\nPresione Enter para volver al menu de usuarios...";
+                    cin.ignore();
+                    cin.get();
                     break;
                 }
             case 3:  // Actualizar usuario
                 system("cls"); {
-                    int id;
-                    string nombre, correo;
+                    if (usuarios.empty()) {
+                        cout << "No hay usuarios para actualizar" << endl;
+                        cout << "\nPresione Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                        break;
+                    }
+                    MostrarDatos();
+                    cout << endl;
 
-                    cout << "ID del usuario a actualizar: ";
-                    cin >> id;
+                    int id = obtenerIdValido("ID del usuario a actualizar: ", true);
                     cin.ignore();
 
+                    string nombre, correo;
                     cout << "Nuevo nombre: ";
                     getline(cin, nombre);
 
@@ -284,6 +370,8 @@ public:
                     getline(cin, correo);
 
                     ActualizarUsuario(id, nombre, correo);
+                    cout << "\nPresione Enter para continuar...";
+                    cin.get();
                     break;
                 }
             case 4:  // Mostrar usuarios
